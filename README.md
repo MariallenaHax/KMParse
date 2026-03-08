@@ -16,3 +16,8 @@ A Very WIP Modern Mario Kart Wii KMP Editor based on Lonrenzi's KMP Editor.
 1. Git clone it repositry
 2. create out folder and "cmake .."
 3. "make"
+
+## Credits
+- [Noclip](https://github.com/magcius/noclip.website/tree/main): Based on brres renderer and font renderer.
+- [StarForge](https://github.com/Astral-C/StarForge/tree/master): Based on Editor Codes.
+- [Lorenzi's KMP Editor](https://github.com/hlorenzi/kmp-editor): Based on Point Renderer and KMP parser.
