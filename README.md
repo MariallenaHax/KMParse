@@ -12,6 +12,7 @@ A Very WIP Modern Mario Kart Wii KMP Editor based on Lonrenzi's KMP Editor.
 - So many bug fixes.
 
 ## Build
+0. Got glfw lib and discord game sdk lib
 1. Git clone it repositry
 2. create out folder and "cmake .."
 3. "make"
