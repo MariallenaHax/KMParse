@@ -1,0 +1,632 @@
+#pragma once
+
+#include <cstdint>
+
+/*enum class EGXAttribute {
+	PositionMatrixIdx,
+	Tex0MatrixIdx,
+	Tex1MatrixIdx,
+	Tex2MatrixIdx,
+	Tex3MatrixIdx,
+	Tex4MatrixIdx,
+	Tex5MatrixIdx,
+	Tex6MatrixIdx,
+	Tex7MatrixIdx,
+
+	Position,
+	Normal,
+	Color0,
+	Color1,
+	TexCoord0,
+	TexCoord1,
+	TexCoord2,
+	TexCoord3,
+	TexCoord4,
+	TexCoord5,
+	TexCoord6,
+	TexCoord7,
+
+	PositionMatrixArray,
+	NormalMatrixArray,
+	TexMatrixArray,
+	LightArray,
+	NBT,
+
+	Null = 0xFF
+};
+
+enum class EGXComponentCount : uint32_t {
+	Position_XY = 0,
+	Position_XYZ,
+
+	Normal_XYZ = 0,
+	Normal_NBT,
+	Normal_NBT3,
+
+	Color_RGB = 0,
+	Color_RGBA,
+
+	TexCoord_U = 0,
+	TexCoord_UV
+};
+
+enum class EGXComponentType : uint32_t {
+	Unsigned8,
+	Signed8,
+	Unsigned16,
+	Signed16,
+	Float,
+
+	// Colors
+	RGB565 = 0,
+	RGB8,
+	RGBX8,
+	RGBA4,
+	RGBA6,
+	RGBA8
+};
+
+enum class EGXAttributeType : uint32_t {
+	None,
+	Direct,
+	Index8,
+	Index16
+};
+
+enum class EGXPrimitiveType : uint8_t {
+	None = 0,
+
+	Quads = 0x80,
+	Triangles = 0x90,
+	TriangleStrips = 0x98,
+	TriangleFan = 0xA0,
+	Lines = 0xA8,
+	LineStrips = 0xB0,
+	Points = 0xB8
+};*/
+
+enum class EGXCullMode : uint8_t {
+	None,
+	Front,
+	Back,
+	All
+};
+
+enum class EGXCompareType : uint8_t {
+	Never,
+	Less,
+	Equal,
+	LEqual,
+	Greater,
+	NEqual,
+	GEqual,
+	Always
+};
+
+enum class EGXAlphaOp : uint8_t {
+	And,
+	Or,
+	XOR,
+	XNOR
+};
+
+enum class EGXBlendMode : uint8_t {
+	None,
+	Blend,
+	Logic,
+	Subtract
+};
+
+enum class EGXBlendModeControl : uint8_t {
+	Zero,               // ! < 0.0
+	One,                // ! < 1.0
+	SrcColor,           // ! < Source Color
+	InverseSrcColor,    // ! < 1.0 - (Source Color)
+	SrcAlpha,           // ! < Source Alpha
+	InverseSrcAlpha,    // ! < 1.0 - (Source Alpha)
+	DstAlpha,           // ! < Framebuffer Alpha
+	InverseDstAlpha     // ! < 1.0 - (Framebuffer Alpha)
+};
+
+enum class EGXLogicOp : uint8_t {
+	Clear = 0,
+	And = 1,
+	Copy = 3,
+	Equiv = 9,
+	Inv = 10,
+	InvAnd = 4,
+	InvCopy = 12,
+	InvOr = 13,
+	NAnd = 14,
+	NoOp = 5,
+	NOr = 8,
+	Or = 7,
+	RevAnd = 2,
+	RevOr = 11,
+	Set = 15,
+	XOr = 6
+};
+
+enum class EGXFogType : uint8_t {
+	None,
+	Linear,
+	Exponential,
+	Exponential_2,
+	Reverse_Exponential,
+	Reverse_Exponential_2
+};
+
+enum class EGXLightMask : uint8_t {
+	Light0 = 0x01,
+	Light1 = 0x02,
+	Light2 = 0x04,
+	Light3 = 0x08,
+	Light4 = 0x10,
+	Light5 = 0x20,
+	Light6 = 0x40,
+	Light7 = 0x80,
+	None = 0x00
+};
+
+enum class EGXDiffuseFunction : uint8_t {
+	None,
+	Signed,
+	Clamp
+};
+
+enum class EGXAttenuationFunction : uint8_t {
+	Spec = 0,	// Specular Computation
+	Spot = 1,	// Spot Light Attenuation
+	None = 2, 	// No attenuation
+};
+
+enum class EGXSpotFunction : uint8_t {
+	OFF = 0x00,
+	FLAT,
+	COS,
+	COS2,
+	SHARP,
+	RING1,
+	RING2,
+};
+
+enum class EGXColorSource : uint8_t {
+	Register, // Use Register Colors
+	Vertex    // Use Vertex Colors
+};
+
+enum class EGXTexGenSrc : uint8_t {
+	Position = 0,
+	Normal = 1,
+	Binormal = 2,
+	Tangent = 3,
+	Tex0 = 4,
+	Tex1 = 5,
+	Tex2 = 6,
+	Tex3 = 7,
+	Tex4 = 8,
+	Tex5 = 9,
+	Tex6 = 10,
+	Tex7 = 11,
+	TexCoord0 = 12,
+	TexCoord1 = 13,
+	TexCoord2 = 14,
+	TexCoord3 = 15,
+	TexCoord4 = 16,
+	TexCoord5 = 17,
+	TexCoord6 = 18,
+	Color0 = 19,
+	Color1 = 20,
+};
+
+enum class EGXTexGenType : uint8_t {
+	Matrix3x4 = 0,
+	Matrix2x4 = 1,
+	Bump0 = 2,
+	Bump1 = 3,
+	Bump2 = 4,
+	Bump3 = 5,
+	Bump4 = 6,
+	Bump5 = 7,
+	Bump6 = 8,
+	Bump7 = 9,
+	SRTG = 10
+};
+
+enum class EGXPosNrmMatrix {
+	PnMtx0 = 0,
+	PnMtx1 = 3,
+	PnMtx2 = 6,
+	PnMtx3 = 9,
+	PnMtx4 = 12,
+	PnMtx5 = 15,
+	PnMtx6 = 18,
+	PnMtx7 = 21,
+	PnMtx8 = 24,
+	PnMtx9 = 27,
+};
+
+enum class EGXTexMatrix : uint8_t {
+	TexMtx0 = 30,
+	TexMtx1 = 33,
+	TexMtx2 = 36,
+	TexMtx3 = 39,
+	TexMtx4 = 42,
+	TexMtx5 = 45,
+	TexMtx6 = 48,
+	TexMtx7 = 51,
+	TexMtx8 = 54,
+	TexMtx9 = 57,
+	Identity = 60,
+	PnMtx0 = 0,
+	PnMtx1 = 3,
+	PnMtx2 = 6,
+	PnMtx3 = 9,
+	PnMtx4 = 12,
+	PnMtx5 = 15,
+	PnMtx6 = 18,
+	PnMtx7 = 21,
+	PnMtx8 = 24,
+	PnMtx9 = 27,
+};
+
+enum class EGXPostTexGenMatrix {
+	PTTexMtx0 = 64,
+	PTTexMtx1 = 67,
+	PTTexMtx2 = 70,
+	PTTexMtx3 = 73,
+	PTTexMtx4 = 76,
+	PTTexMtx5 = 79,
+	PTTexMtx6 = 82,
+	PTTexMtx7 = 85,
+	PTTexMtx8 = 88,
+	PTTexMtx9 = 91,
+	PTTexMtx10 = 94,
+	PTTexMtx11 = 97,
+	PTTexMtx12 = 100,
+	PTTexMtx13 = 103,
+	PTTexMtx14 = 106,
+	PTTexMtx15 = 109,
+	PTTexMtx16 = 112,
+	PTTexMtx17 = 115,
+	PTTexMtx18 = 118,
+	PTTexMtx19 = 121,
+	PTIdentity = 125,
+};
+
+enum class EGXTexMatrixType : uint8_t {
+	Matrix3x4,
+	Matrix2x4
+};
+
+enum class EGXTexCoordSlot : uint8_t {
+	TexCoord0 = 0,
+	TexCoord1 = 1,
+	TexCoord2 = 2,
+	TexCoord3 = 3,
+	TexCoord4 = 4,
+	TexCoord5 = 5,
+	TexCoord6 = 6,
+	TexCoord7 = 7,
+	Null = 0xFF
+};
+
+enum class EGXTexMapSlot : uint8_t {
+	TexMap0 = 0,
+	TexMap1 = 1,
+	TexMap2 = 2,
+	TexMap3 = 3,
+	TexMap4 = 4,
+	TexMap5 = 5,
+	TexMap6 = 6,
+	TexMap7 = 7,
+	Null = 0xFF
+};
+
+enum class EGXColorChannelId : uint8_t {
+	Color0 = 0,
+	Alpha0 = 1,
+	Color1 = 2,
+	Alpha1 = 3,
+	Color0A0 = 4,
+	Color1A1 = 5,
+	ColorZero = 6,
+	AlphaBump = 7,
+	AlphaBumpN = 8,
+	ColorNull = 0xFF,
+};
+
+enum class EGXTevStageId : uint8_t {
+	TevStage_0,
+	TevStage_1,
+	TevStage_2,
+	TevStage_3,
+	TevStage_4,
+	TevStage_5,
+	TevStage_6,
+	TevStage_7,
+	TevStage_8,
+	TevStage_9,
+	TevStage_10,
+	TevStage_11,
+	TevStage_12,
+	TevStage_13,
+	TevStage_14,
+	TevStage_15,
+};
+
+enum class EGXTevRegister : uint8_t {
+	Prev = 0,
+	Reg0 = 1,
+	Reg1 = 2,
+	Reg2 = 3,
+};
+
+enum class EGXCombineColorInput : uint8_t {
+	ColorPrev = 0,  // ! < Use Color Value from previous TEV stage
+	AlphaPrev = 1,  // ! < Use Alpha Value from previous TEV stage
+	C0 = 2,         // ! < Use the Color Value from the Color/Output Register 0
+	A0 = 3,         // ! < Use the Alpha value from the Color/Output Register 0
+	C1 = 4,         // ! < Use the Color Value from the Color/Output Register 1
+	A1 = 5,         // ! < Use the Alpha value from the Color/Output Register 1
+	C2 = 6,         // ! < Use the Color Value from the Color/Output Register 2
+	A2 = 7,         // ! < Use the Alpha value from the Color/Output Register 2
+	TexColor = 8,   // ! < Use the Color value from Texture
+	TexAlpha = 9,   // ! < Use the Alpha value from Texture
+	RasColor = 10,  // ! < Use the color value from rasterizer
+	RasAlpha = 11,  // ! < Use the alpha value from rasterizer
+	One = 12,
+	Half = 13,
+	Konst = 14, // ToDo: Is this GX_CC_QUARTER?
+	Zero = 15
+					// ToDo: Is this missing GX_CC_TEXRRR, GX_CC_TEXGGG, GX_CC_TEXBBBB?
+};
+
+enum class EGXCombineAlphaInput : uint8_t {
+	AlphaPrev = 0,  // Use the Alpha value form the previous TEV stage
+	A0 = 1,         // Use the Alpha value from the Color/Output Register 0
+	A1 = 2,         // Use the Alpha value from the Color/Output Register 1
+	A2 = 3,         // Use the Alpha value from the Color/Output Register 2
+	TexAlpha = 4,   // Use the Alpha value from the Texture
+	RasAlpha = 5,   // Use the Alpha value from the rasterizer
+	Konst = 6,      // ToDO: Is this GX_CA_ONE?
+	Zero = 7,
+	One = 8
+};
+
+enum class EGXTevOp : uint8_t {
+	Add = 0,
+	Sub = 1,
+	Comp_R8_GT = 8,
+	Comp_R8_EQ = 9,
+	Comp_GR16_GT = 10,
+	Comp_GR16_EQ = 11,
+	Comp_BGR24_GT = 12,
+	Comp_BGR24_EQ = 13,
+	Comp_RGB8_GT = 14,
+	Comp_RGB8_EQ = 15,
+	Comp_A8_GT = Comp_RGB8_GT,
+	Comp_A8_EQ = Comp_RGB8_EQ
+};
+
+enum class EGXTevBias : uint8_t {
+	Zero = 0,
+	AddHalf = 1,
+	SubHalf = 2,
+
+	// Used to denote the compare ops to the HW.
+	Compare = 3
+};
+
+enum class EGXTevScale : uint8_t {
+	Scale_1 = 0,
+	Scale_2 = 1,
+	Scale_4 = 2,
+	Divide_2 = 3
+};
+
+enum class EGXKonstColorSel : uint8_t {
+	KCSel_1 = 0x00,
+	KCSel_7_8 = 0x01,
+	KCSel_6_8 = 0x02,
+	KCSel_5_8 = 0x03,
+	KCSel_4_8 = 0x04,
+	KCSel_3_8 = 0x05,
+	KCSel_2_8 = 0x06,
+	KCSel_1_8 = 0x07, 
+
+	KCSel_K0 = 0x0C,
+	KCSel_K1 = 0x0D,
+	KCSel_K2 = 0x0E,
+	KCSel_K3 = 0x0F,
+
+	KCSel_K0_R = 0x10,
+	KCSel_K1_R = 0x11,
+	KCSel_K2_R = 0x12,
+	KCSel_K3_R = 0x13,
+
+	KCSel_K0_G = 0x14,
+	KCSel_K1_G = 0x15,
+	KCSel_K2_G = 0x16,
+	KCSel_K3_G = 0x17,
+
+	KCSel_K0_B = 0x18,
+	KCSel_K1_B = 0x19,
+	KCSel_K2_B = 0x1A,
+	KCSel_K3_B = 0x1B,
+
+	KCSel_K0_A = 0x1C,
+	KCSel_K1_A = 0x1D,
+	KCSel_K2_A = 0x1E,
+	KCSel_K3_A = 0x1F,
+
+	KCSel_Null = 0xFF
+};
+
+enum class EGXKonstAlphaSel : uint8_t {
+	KASel_1 = 0x00,     // Constant 1.0
+	KASel_7_8 = 0x01,   // Constant 7/8
+	KASel_3_4 = 0x02,   // Constant 3/4
+	KASel_5_8 = 0x03,   // Constant 5/8
+	KASel_1_2 = 0x04,   // Constant 1/2
+	KASel_3_8 = 0x05,   // Constant 3/8
+	KASel_1_4 = 0x06,   // Constant 1/4
+	KASel_1_8 = 0x07,   // Constant 1/8
+	KASel_K0_R = 0x10,  // K0[R] Register
+	KASel_K1_R = 0x11,  // K1[R] Register
+	KASel_K2_R = 0x12,  // K2[R] Register
+	KASel_K3_R = 0x13,  // K3[R] Register
+	KASel_K0_G = 0x14,  // K0[G] Register
+	KASel_K1_G = 0x15,  // K1[G] Register
+	KASel_K2_G = 0x16,  // K2[G] Register
+	KASel_K3_G = 0x17,  // K3[G] Register
+	KASel_K0_B = 0x18,  // K0[B] Register
+	KASel_K1_B = 0x19,  // K1[B] Register
+	KASel_K2_B = 0x1A,  // K2[B] Register
+	KASel_K3_B = 0x1B,  // K3[B] Register
+	KASel_K0_A = 0x1C,  // K0[A] Register
+	KASel_K1_A = 0x1D,  // K1[A] Register
+	KASel_K2_A = 0x1E,  // K2[A] Register
+	KASel_K3_A = 0x1F,  // K3[A] Register
+
+	KASel_Null = 0xFF
+};
+
+enum class EGXSwapMode : uint8_t {
+	R,
+	G,
+	B,
+	A
+};
+
+enum class EGXTextureFormat : uint32_t {
+	I4,     // 4BPP, 8x8 blocks, monochrome
+	I8,     // 8BPP, 8x8 blocks, monochrome
+	IA4,    // 8BPP, 8x4 blocks, monochrome + alpha
+	IA8,    // 16BPP, 4x4 blocks, monochrome + alpha
+	RGB565, // 16BPP, 4x4 blocks, color
+	RGB5A3, // 16BPP, 4x4 blocks, color + alpha
+	RGBA32, // 32BPP, 4x4 blocks, color + alpha
+
+	// There is no enum value associated with ID 0x07.
+
+	C4 = 8, // 4BPP, 8x8 blocks, palette
+	C8,     // 8BPP, 8x4 blocks, palette
+	C14X2,  // 16BPP, 4x4 blocks, palette
+
+	// There are no enum values associated with IDs 0x0B to 0x0D.
+
+	CMPR = 14    // 4BPP, 8x8 blocks, palette per block
+};
+
+enum class EGXWrapMode : uint32_t {
+	ClampToEdge,
+	Repeat,
+	MirroredRepeat
+};
+
+enum class EGXPaletteFormat : uint32_t {
+	IA8,
+	RGB565,
+	RGB5A3
+};
+
+enum class EGXFilterMode : uint32_t {
+	// Valid in both Min and Mag Filter
+	Nearest,                  // Point Sampling, No Mipmap
+	Linear,                   // Bilinear Filtering, No Mipmap
+
+	// Valid in only Min Filter
+	NearestMipmapNearest,     // Point Sampling, Discrete Mipmap
+	NearestMipmapLinear,      // Bilinear Filtering, Discrete Mipmap
+	LinearMipmapNearest,      // Point Sampling, Linear MipMap
+	LinearMipmapLinear,       // Trilinear Filtering
+};
+
+enum class EGXMaxAnisotropy : uint8_t {
+	One,
+	Two,
+	Four
+};
+
+enum class EGXIndirectTexScale : uint8_t {
+	IndDivide_1,
+	IndDivide_2,
+	IndDivide_4,
+	IndDivide_8,
+	IndDivide_16,
+	IndDivide_32,
+	IndDivide_64,
+	IndDivide_128,
+	IndDivide_256
+};
+
+enum class EGXIndirectTexFormat : uint8_t {
+	IndFormat_8,
+	IndFormat_5,
+	IndFormat_4,
+	IndFormat_3
+};
+
+enum class EGXIndirectTexBias : uint8_t {
+	IndBias_None,
+	IndBias_S,
+	IndBias_T,
+	IndBias_ST,
+	IndBias_U,
+	IndBias_SU,
+	IndBias_TU,
+	IndBias_STU
+};
+
+enum class EGXIndirectTexMatrixId : uint8_t {
+	IndTexMtx_Off = 0,
+
+	IndTexMtx_0 = 1,
+	IndTexMtx_1 = 2,
+	IndTexMtx_2 = 3,
+
+	IndTexMtx_S0 = 5,
+	IndTexMtx_S1 = 6,
+	IndTexMtx_S2 = 7,
+
+	IndTexMtx_T0 = 9,
+	IndTexMtx_T1 = 10,
+	IndTexMtx_T2 = 11
+};
+
+enum class EGXIndirectWrapMode : uint8_t {
+	IndWrapMode_Off,
+
+	IndWrapMode_256,
+	IndWrapMode_128,
+	IndWrapMode_64,
+	IndWrapMode_32,
+	IndWrapMode_16,
+	IndWrapMode_8,
+	IndWrapMode_4,
+	IndWrapMode_2,
+	IndWrapMode_0,
+};
+
+enum class EGXIndirectAlphaSel : uint8_t {
+	IndAlphaSel_Off,
+
+	IndAlphaSel_S,
+	IndAlphaSel_T,
+	IndAlphaSel_U
+};
+enum class EGXRasColorChannelSlot {
+	COLOR0A0 = 0,
+	COLOR1A1 = 1,
+	ALPHA_BUMP = 5,
+	ALPHA_BUMP_N = 6,
+	COLOR_ZERO = 7,
+};
+enum class EGXIndirectTexStageID {
+	STAGE0 = 0,
+	STAGE1 = 1,
+	STAGE2 = 2,
+	STAGE3 = 3,
+	NONE = (int)4
+};

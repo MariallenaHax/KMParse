@@ -1,0 +1,320 @@
+#pragma once
+
+#include <filesystem>
+#include <algorithm>
+#include <memory>
+#include <vector>
+#include <map>
+#include "bstream.h"
+#include "Util.hpp"
+#include "Compression.hpp"
+
+namespace Archive {
+    class Rarc;
+    class Folder;
+    class U8;
+
+    uint16_t Hash(std::string str);
+
+    class File : public std::enable_shared_from_this<File>{
+        friend Rarc;
+        // this mount stays shared because the archive child should be valid for the lifetime of the file
+        std::shared_ptr<Rarc> mMountedArchive;
+        std::weak_ptr<Rarc> mArchive;
+        std::weak_ptr<Folder> mParentDir;
+
+        std::string mName;
+
+        uint8_t* mData;
+        uint32_t mSize;
+    public:
+    std::shared_ptr<Rarc> GetMountedArchive(){ return mMountedArchive; }
+
+        void SetData(unsigned char* data, std::size_t size){
+            mSize = size;
+
+            if(mData != nullptr){
+                //delete[] mData;
+            }
+
+            mData = new uint8_t[size];
+            memcpy(mData, data, size);
+        }
+
+        std::string GetName() { return mName; }
+        void SetName(std::string name) { mName = name; }
+
+        uint32_t GetSize() { return mSize; }
+        uint8_t* GetData() { return mData; }
+
+
+        bool MountAsArchive();
+
+        std::shared_ptr<Rarc> operator->() const {
+            return mMountedArchive;
+        }
+
+        static std::shared_ptr<File> Create(){
+            return std::make_shared<File>();
+        }
+
+        std::shared_ptr<File> GetPtr(){
+            return shared_from_this();
+        }
+        void SetView(unsigned char* data, size_t size) {
+            mData = data;
+            mSize = size;
+        }
+        File(){
+            mData = nullptr;
+            mSize = 0;
+        }
+
+        ~File(){
+            if(mData != nullptr){
+                //delete[] mData;
+            }
+        }
+    };
+
+    class Folder : public std::enable_shared_from_this<Folder> {
+        std::weak_ptr<Rarc> mArchive;
+        std::weak_ptr<U8> mArchiveU8;
+        std::weak_ptr<Folder> mParentDir;
+
+        std::string mName;
+
+        std::vector<std::shared_ptr<Folder>> mFolders;
+        std::vector<std::shared_ptr<File>> mFiles;
+
+
+    public:
+
+        std::string GetName() { return mName; }
+        void SetName(std::string name) { mName = name; }
+
+        std::weak_ptr<Folder> GetParent() { return mParentDir.lock(); }
+        void SetParent(std::shared_ptr<Folder> dir) { mParentDir = dir; dir->AddSubdirectory(shared_from_this()); } //fix this later
+
+        void SetParentUnsafe(std::shared_ptr<Folder> dir){ mParentDir = dir; }
+
+        void AddFile(std::shared_ptr<File> file) { mFiles.push_back(file); }
+        void DeleteFile(std::shared_ptr<File> file) {
+            int index = -1;
+            for(int i = 0; i < mFiles.size(); i++) {
+                if(mFiles.at(i)->GetName() == file->GetName()){
+                    index = i;
+                    break;
+                }
+            }
+            if(index > -1) mFiles.erase(mFiles.begin() + index);
+        }
+
+        void AddSubdirectory(std::shared_ptr<Folder> dir);
+
+        void AddSubdirectoryU8(std::shared_ptr<Folder> dir);
+
+        std::vector<std::shared_ptr<Folder>>& GetSubdirectories() { return mFolders; }
+
+        std::vector<std::shared_ptr<File>>& GetFiles() { return mFiles; }
+        uint16_t GetFileCount() { return (uint16_t)mFiles.size() + (uint16_t)mFolders.size(); }
+
+        std::weak_ptr<Rarc> GetArchive() { return mArchive.lock(); }
+        void SetArchive(std::shared_ptr<Rarc> arc) { mArchive = arc; }
+
+        std::shared_ptr<Folder> Copy(std::shared_ptr<Rarc> archive);
+
+        std::shared_ptr<Folder> CopyU8(std::shared_ptr<U8> archive);
+
+        std::shared_ptr<File> GetFile(std::filesystem::path path);
+        std::shared_ptr<Folder> GetFolder(std::filesystem::path path);
+
+        static std::shared_ptr<Folder> Create(std::shared_ptr<Rarc> archive){
+            return std::make_shared<Folder>(archive);
+        }
+
+        static std::shared_ptr<Folder> CreateU8(std::shared_ptr<U8> archive) {
+            return std::make_shared<Folder>(archive);
+        }
+
+
+        std::shared_ptr<Folder> GetPtr(){
+            return shared_from_this();
+        }
+
+        template<typename T>
+        std::shared_ptr<T> Get(std::filesystem::path path){
+            if constexpr(std::is_same_v<T,File>){
+                return GetFile(path);
+            } else if constexpr(std::is_same_v<T, Folder>){
+                return GetFolder(path);
+            } else if constexpr(std::is_same_v<T, Folder>){
+                return GetFile(path)->GetMountedArchive();
+            }
+            return nullptr;
+        }
+
+        Folder(std::shared_ptr<Rarc> archive);
+        Folder(std::shared_ptr<U8> archive);
+
+        Folder(){}
+        ~Folder(){}
+    };
+
+    class Rarc : public std::enable_shared_from_this<Rarc> {
+    private:
+        friend class Folder;
+        std::vector<std::shared_ptr<Folder>> mDirectories;
+        bStream::Endianess mArchiveOrder { bStream::Endianess::Big };
+        std::map<std::string, uint32_t> CalculateArchiveSizes();
+
+    public:
+        bool Load(bStream::CStream* stream);
+        void Save(std::vector<uint8_t>& buffer, Compression::Format compression=Compression::Format::None, uint8_t compressionLevel=7, bool padCompressed=false);
+        void SaveToFile(std::filesystem::path path, Compression::Format compression=Compression::Format::None, uint8_t compressionLevel=7, bool padCompressed=false);
+
+        uint32_t Size() { return CalculateArchiveSizes()["total"]; };
+
+        // Set if this should be a BE or LE rarc
+        void SetByteOrder(bStream::Endianess order) { mArchiveOrder = order; }
+        bStream::Endianess ByteOrder() { return mArchiveOrder; }
+
+        // Directories should all be children of root
+        std::shared_ptr<Folder> GetRoot(){ return mDirectories[0]; }
+        void SetRoot(std::shared_ptr<Folder> folder) {
+            if(mDirectories.size() != 0){
+                folder->AddSubdirectory(mDirectories[0]);
+            }
+            mDirectories.insert(mDirectories.begin(), folder);
+        }
+
+        template<typename T>
+        std::shared_ptr<T> Get(std::filesystem::path path){
+            if constexpr(std::is_same_v<T,File>){
+                return GetFile(path);
+            } else if constexpr(std::is_same_v<T, Folder>){
+                return GetFolder(path);
+            } else if constexpr(std::is_same_v<T, Folder>){
+                return GetFile(path)->GetMountedArchive();
+            }
+            return nullptr;
+        }
+
+        std::shared_ptr<File> GetFile(std::filesystem::path path) {
+            if(path.begin()->string() != "/"){
+                return mDirectories[0]->GetFile(path);
+            } else {
+                std::filesystem::path subPath;
+                for(auto it = (++path.begin()); it != path.end(); it++) subPath  = subPath / it->string();
+                return mDirectories[0]->GetFile(subPath);
+            }
+        }
+
+        std::shared_ptr<Folder> GetFolder(std::filesystem::path path){
+            if(path.begin()->string() != "/"){
+                return mDirectories[0]->GetFolder(path);
+            } else {
+                std::filesystem::path subPath;
+                for(auto it = (++path.begin()); it != path.end(); it++) subPath  = subPath / it->string();
+
+                return mDirectories[0]->GetFolder(subPath);
+            }
+        }
+
+        static std::shared_ptr<Rarc> Create(){
+            return std::make_shared<Rarc>();
+        }
+
+        std::shared_ptr<Rarc> GetPtr(){
+            return shared_from_this();
+        }
+
+
+        Rarc(){}
+        ~Rarc(){}
+    };
+    class U8 : public std::enable_shared_from_this<U8> {
+    private:
+        friend class Folder;
+        struct U8Node {
+            uint32_t typeAndNameOffset;
+            uint32_t dataOffsetOrFirstIdx;
+            uint32_t sizeOrLastIdx;
+        };
+        std::vector<std::shared_ptr<Folder>> mDirectories;
+        std::vector<std::shared_ptr<File>> mFiles;
+        bStream::Endianess mArchiveOrder{ bStream::Endianess::Big };
+        std::map<std::string, uint32_t> CalculateArchiveSizes();
+
+    public:
+        bStream::CMemoryStream mDecompressed;
+        bool Load(bStream::CStream* stream);
+        void Save(std::vector<uint8_t>& buffer, Compression::Format compression = Compression::Format::None, uint8_t compressionLevel = 7, bool padCompressed = false);
+        void SaveToFile(std::filesystem::path path, Compression::Format compression = Compression::Format::None, uint8_t compressionLevel = 7, bool padCompressed = false);
+
+        uint32_t Size() { return CalculateArchiveSizes()["total"]; };
+
+        void SetByteOrder(bStream::Endianess order) { mArchiveOrder = order; }
+        bStream::Endianess ByteOrder() { return mArchiveOrder; }
+
+        std::shared_ptr<Folder> GetRoot() { return mDirectories[0]; }
+        void SetRoot(std::shared_ptr<Folder> folder) {
+            if (mDirectories.size() != 0) {
+                folder->AddSubdirectory(mDirectories[0]);
+            }
+            mDirectories.insert(mDirectories.begin(), folder);
+        }
+
+        template<typename T>
+        std::shared_ptr<T> Get(std::filesystem::path path) {
+            if constexpr (std::is_same_v<T, File>) {
+                return GetFile(path);
+            }
+            else if constexpr (std::is_same_v<T, Folder>) {
+                return GetFolder(path);
+            }
+            else if constexpr (std::is_same_v<T, Folder>) {
+                return GetFile(path)->GetMountedArchive();
+            }
+            return nullptr;
+        }
+
+        std::shared_ptr<File> GetFile(std::filesystem::path path) {
+            if (mDirectories.empty() || !mDirectories[0])
+                return nullptr;
+            if (!path.is_absolute()) {
+                return mDirectories[0]->GetFile(path);
+            }
+            else {
+                std::filesystem::path subPath;
+                for (auto it = ++path.begin(); it != path.end(); ++it)
+                    subPath /= *it;
+                return mDirectories[0]->GetFile(subPath);
+            }
+        }
+
+        std::shared_ptr<Folder> GetFolder(std::filesystem::path path) {
+            if (path.begin()->string() != "/") {
+                return mDirectories[0]->GetFolder(path);
+            }
+            else {
+                std::filesystem::path subPath;
+                for (auto it = (++path.begin()); it != path.end(); it++) subPath = subPath / it->string();
+
+                return mDirectories[0]->GetFolder(subPath);
+            }
+        }
+
+        static std::shared_ptr<U8> Create() {
+            return std::make_shared<U8>();
+        }
+
+        std::shared_ptr<U8> GetPtr() {
+            return shared_from_this();
+        }
+
+
+        U8() {}
+        ~U8() {}
+    };
+}

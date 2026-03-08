@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "www.apple.com">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>KMParse</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.marianne8559.kmpeditor</string>
+    <key>CFBundleName</key>
+    <string>KMParse</string>
+    <key>CFBundleDisplayName</key>
+    <string>KMParse</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Developed by Marianne8559.</string>
+    <key>CFBundleGetInfoString</key>
+    <string>KMParse MKWii KMP Editor by Marianne8559.</string>
+    <key>CFBundleIconFile</key>
+    <string>funkey_kong.icns</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>0.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>Dev.0</string>
+    <key>CFBundleSupportedPlatforms</key>
+    <array>
+      <string>MacOSX</string>
+    </array>
+    <key>CFBundleVersion</key>
+    <string>0.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.games</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.13.0</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true />
+    </dict>
+    <key>LSHasLocalizedDisplayName</key>
+    <true/>
+    	<key>NSHighResolutionCapable</key>
+	<true/>
+</dict>
+</plist>

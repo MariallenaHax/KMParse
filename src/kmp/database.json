@@ -1,0 +1,309 @@
+{
+    "Objects": [
+        {
+            "name": "airblock",
+            "id": 1,
+            "required": {},
+            "settings": {},
+            "has_route": false
+        },
+        {
+            "name": "Psea",
+            "id": 2,
+            "required": {
+                "brresName": "Psea.brres",
+                "modelNames": [
+                    "Psea1sand",
+                    "Psea2dark",
+                    "Psea3nami",
+                    "Psea4tex",
+                    "Psea5spc"
+                ],
+                "Objects": [
+                    "pocha"
+                ]
+            },
+            "settings": {},
+            "has_route": false
+        },
+        {
+            "name": "lensFX",
+            "id": 3,
+            "required": {},
+            "settings": {},
+            "has_route": false
+        },
+        {
+            "name": "venice_nami",
+            "id": 4,
+            "required": {
+                "brresName": "venice_nami.brres",
+                "modelNames": [
+                    "venice_dark",
+                    "venice_nami",
+                    "venice_sand",
+                    "venice_tex"
+                ],
+                "Objects": [
+                    "pocha"
+                ]
+            },
+            "settings": {
+                "1": "Rising speed in odd Stages",
+                "1_type": "number",
+                "2": "Final Phase height",
+                "2_type": "number",
+                "3": "Phase 1 target height",
+                "3_type": "number",
+                "4": "Phase 2 frame count",
+                "4_type": "number",
+                "5": "Phase 3 target height",
+                "5_type": "number",
+                "6": "Phase 4 frame count",
+                "6_type": "number",
+                "7": "Rising speed in even Stages",
+                "7_type": "number"
+            },
+            "has_route": false
+        },
+        {
+            "name": "sound_river",
+            "id": 5,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true
+        },
+        {
+            "name": "sound_water_fall",
+            "id": 6,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true
+        },
+        {
+            "name": "pocha",
+            "id": 7,
+            "required": {
+                "brresName": "pocha.brres",
+                "modelNames": [
+                    "pocha"
+                ],
+                "effectNames": "pocha/rk_pocha"
+            },
+            "settings": {
+                "1": "Water OOB KCL Index",
+                "1_type": "number"
+            },
+            "has_route": false
+        },
+        {
+            "name": "sound_lake",
+            "id": 8,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true
+        },
+        {
+            "name": "sound_big_fall",
+            "id": 9,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+            "T2.2","T3.1","T5.1","T8.2"
+            ]
+        },
+        {
+            "name": "sound_sea",
+            "id": 10,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+            "T5.1","T6.3"
+            ]
+        },
+        {
+            "name": "sound_fountain",
+            "id": 11,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+            "T2.2","T3.1","T5.1","T8.2"
+            ]
+        },
+        {
+            "name": "sound_volcano",
+            "id": 12,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+                "T8.3"
+            ]
+        },
+        {
+            "name": "sound_audience",
+            "id": 13,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+                "T1.1","T1.4","T2.3","A3.1","A5.4"
+            ]
+        },
+        {
+            "name": "sound_big_river",
+            "id": 14,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+                "T3.2","T4.2","T5.2","A7.3"
+            ]
+        },
+        {
+            "name": "sound_sand_fall",
+            "id": 15,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true
+        },
+        {
+            "name": "sound_lift",
+            "id": 16,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true
+        },
+        {
+            "name": "pochaYogan",
+            "id": 17,
+            "required": {
+                "brresName": "pochaYogan.brres",
+                "modelNames": [
+                    "pochaYogan"
+                ],
+                "effectNames":"pochaYogan/rk_pochaYogan"
+            },
+            "settings": {
+                "1": "Water OOB KCL Index",
+                "1_type": "number"
+            },
+            "has_route": false
+        },
+        {
+            "name": "entry",
+            "id": 18,
+            "required": {
+                "effectName": "entry/rk_entry"
+            },
+            "settings": {
+                "1": "Water OOB KCL Index",
+                "1_type": "number"
+            },
+            "has_route": false
+        },
+        {
+            "name": "pochaMori",
+            "id": 19,
+            "required": {
+                "brresName": "pochaMori.brres",
+                "modelNames": [
+                    "pochaMori"
+                ],
+                "effectNames": "pochaMori/rk_pochaMori"
+            },
+            "settings": {
+                "1": "Water OOB KCL Index",
+                "1_type": "number"
+            },
+            "has_route": false,
+            "Slots":[
+                "T4.2","A2.5"
+            ]
+        },
+        {
+            "name": "eline_control",
+            "id": 20,
+            "required": {},
+            "settings": {
+                "1": "Can AI enter in?",
+                "1_type": "checkbox",
+                "2": "Seconds to Next Controller",
+                "2_type": "number",
+                "3": "Controller ID",
+                "3_type": "number",
+                "4": "Next Controller ID",
+                "4_type": "number",
+                "8": "ENPH Section",
+                "8_type": "Select ENPH"
+            },
+            "has_route": false
+        },
+        {
+            "name": "sound_Mii",
+            "id": 21,
+            "required": {
+            },
+            "settings": {},
+            "has_route": true,
+            "Slots":[
+                "T1.1","T3.1"
+            ]
+        },
+        {
+            "name": "begoman_manager",
+            "id": 22,
+            "required": {},
+            "settings": {
+                "1": "Manager ID",
+                "1_type": "number",
+                "2": "Number of Topmen to control",
+                "2_type": "number",
+                "3": "First Topman ID to control",
+                "3_type": "number",
+                "4": "Topman behavior",
+                "4_type": "list",
+                "4_lists": ["Unknown","Ignore player","Attack player"],
+                "5": "Number of Topmen",
+                "8_type": "number"
+            },
+            "has_route": false
+        },
+        {
+            "name": "ice",
+            "id": 23,
+            "required": {
+                "brresName": "ice.brres",
+                "modelNames": [
+                    "ice"
+                ]
+            },
+            "settings": {},
+            "Slots":[
+                "T6.1"
+            ],
+            "has_route": false
+        },
+        {
+            "name": "startline2D",
+            "id": 24,
+            "required": {},
+            "settings": {},
+            "has_route": false
+        }
+    ]
+}
