@@ -13,7 +13,6 @@ A Very WIP Modern Mario Kart Wii KMP Editor based on Lorenzi's KMP Editor.
 - Preview Intro Camera Features.
 
 ## Build
-0. Get glfw3 lib and dll, and discord game sdk lib and dll.
 1. Git clone it repositry
 2. create out folder and "cmake .."
 3.  "make"
