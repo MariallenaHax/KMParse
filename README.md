@@ -2,7 +2,7 @@
 A Very WIP Modern Mario Kart Wii KMP Editor based on Lorenzi's KMP Editor.
 
 ## Features
-- The operation method is almost the same as Lorenzi's KMP Editor, which makes it easy to switch from one.
+- Key Guide is almost the same as Lorenzi's KMP Editor, which makes it easy to switch from one.
 - More Custom AREA Settings! It's supports Conditional out of bounds and BlueLeopard's "Extended KMP Areas" Custom Codes.
 - Direct szs editing and writing! (of course its supports open kmp file on working folder)
 
