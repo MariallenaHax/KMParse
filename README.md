@@ -10,7 +10,7 @@ A Very WIP Modern Mario Kart Wii KMP Editor based on Lorenzi's KMP Editor.
 - Add Error Check Features: it is similar to "wszst check".
 - Add GOBJ, POTI, CKPT, ITPH and ENPH editing supports.
 - So many bug fixes.
-- Add discordless variant: currntly this program requires discord.
+- Preview Intro Camera Features.
 
 ## Build
 0. Get glfw3 lib and dll, and discord game sdk lib and dll.
