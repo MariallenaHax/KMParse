@@ -16,7 +16,7 @@
 
 constexpr discord::ClientId ClientID = 1476903249612378162;
 discord::Core * core_raw{};
-auto result = discord::Core::Create(ClientID, DiscordCreateFlags_Default, &core_raw);
+auto result = discord::Core::Create(ClientID, DiscordCreateFlags_NoRequireDiscord, &core_raw);
 std::unique_ptr<discord::Core> core(core_raw);
 std::atomic<bool> running = true;
 int RenderContext::UIItem::nextId = 0;
@@ -26,6 +26,10 @@ std::vector<std::string> RenderContext::routeList = { "None" };
 std::vector<std::string> RenderContext::fogList = { "None" };
 void RenderContext::SetActivity(const std::string& details, const std::string& state)
 {
+	if (result != discord::Result::Ok || !core)
+	{
+		return;
+	}
 	discord::Activity activity{};
 	activity.SetState(state.c_str());
 	activity.SetDetails(details.c_str());
@@ -3225,7 +3229,10 @@ if (cameItem != nullptr && cameItem->expanded)
 	if (Input::GetMouseButtonUp(0))
 		HandleMouseUp();
 
-	core->RunCallbacks();
+	if (result == discord::Result::Ok && core)
+	{
+		core->RunCallbacks();
+	}
 	return true;
 }
 int RenderContext::findCursorPos(
